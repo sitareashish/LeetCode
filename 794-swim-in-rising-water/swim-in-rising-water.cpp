@@ -1,50 +1,57 @@
 class Solution {
 public:
     int n;
-    vector<vector<int>> vis;
-    vector<vector<vector<int>>> dp;
-    vector<vector<int>> grid;
-
     int dx[4] = {1, 0, -1, 0};
     int dy[4] = {0, 1, 0, -1};
 
-    bool isValid(int x, int y/*, int wl*/) {
+    vector<vector<int>> vis;
+    bool isValid(int x, int y) {
         return (
-            x>=0 && y>=0 && y<n && x<n && /*grid[x][y] >= wl &&*/ !vis[x][y]
+            x >= 0 && y >= 0 && x < n && y < n && !vis[x][y]
         );
+
     }
-    int rec(int x, int y, int wl) {
-        if (x == n-1 && y == n-1) {
-            return wl;
-        }
 
-        if (dp[x][y][wl] != -1) {
-            return dp[x][y][wl];
-        }
+    int swimInWater(vector<vector<int>>& grid) {
+        n = grid.size();
+        priority_queue<pair<int, pair<int, int>>, 
+                        vector<pair<int, pair<int, int>>>, 
+                        greater<pair<int, pair<int, int>>>> 
+        pq;
 
-        int res = INT_MAX;
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
+        vis.assign(n, vector<int>(n, 0));
 
-            if (isValid(nx, ny)) {
+        pq.push({grid[0][0], {0, 0}});
+
+
+        int mx = 0;
+
+        while (!pq.empty()) {
+            auto curr = pq.top();
+            pq.pop();
+
+            int val = curr.first;
+            int x = curr.second.first;
+            int y = curr.second.second;
+
+            if (val > mx) {
+                mx = val;
+            }
+
+            if (x == n - 1 && y == n - 1) {
+                return mx;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (isValid(nx, ny)) {
+                    pq.push({grid[nx][ny], {nx, ny}});
                     vis[nx][ny] = 1;
-                    res = min(res, rec(nx, ny, max(wl, grid[nx][ny])));
-                    vis[nx][ny] = 0;
+                }
             }
         }
-
-        return dp[x][y][wl] = res;
-    }
-
-    int swimInWater(vector<vector<int>>& gri) {
-        grid = gri;
-
-        n = grid.size();
-        vis.assign(n, vector<int>(n, 0));
-        dp.assign(n, vector<vector<int>>(n, vector<int>(n*n, -1)));
-        vis[0][0] = 1;
-        int ans = rec(0, 0, grid[0][0]);
-        return ans;
+        return mx;
     }
 };
