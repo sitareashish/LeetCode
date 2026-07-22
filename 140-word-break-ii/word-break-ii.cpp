@@ -4,7 +4,7 @@ public:
     vector<string> ans;
     unordered_set<string> st;
     
-    void rec(int level, string s, string& moving) {
+    void rec(int level, string s, string moving) {
         if (level == s.size()) {
             ans.push_back(moving);
             return;
