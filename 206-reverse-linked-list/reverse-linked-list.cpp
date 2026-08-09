@@ -1,12 +1,9 @@
 class Solution {
 public:
-    ListNode* head;
+    //ListNode* head;
 
     void reverse(ListNode* node) {
-        if (node == NULL || node->next == NULL) {
-            head = node;
-            return;
-        }
+        
 
         reverse(node->next);
 
@@ -15,8 +12,21 @@ public:
     }
 
     ListNode* reverseList(ListNode* node) {
-        head = NULL;
-        reverse(node);
-        return head;
+        if (node == NULL || node->next == NULL) {
+            return node;
+        }
+        //reverse(node);
+        ListNode* st = node;
+        ListNode* head = node -> next;
+        ListNode* tail = node;
+        while(head != nullptr){
+            ListNode* temp = head -> next;
+            head -> next = tail;
+            tail = head;
+            head = temp;
+        }
+        node -> next = nullptr;
+        //head -> next = tail;
+        return tail;
     }
 };
